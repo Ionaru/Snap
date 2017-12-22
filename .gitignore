@@ -1,0 +1,6 @@
+.idea/
+dist/
+*.iml
+config/config.json
+node_modules/
+*.png

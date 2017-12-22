@@ -1,0 +1,19 @@
+{
+  "uniqueFiles": false,
+  "websites": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "name": "Github-Page",
+      "url": "https://github.com/GoogleChrome/puppeteer",
+      "captureInterval": 5
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "name": "Google",
+      "url": "https://www.google.com/",
+      "captureInterval": 30
+    }
+  ]
+}
