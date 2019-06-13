@@ -1,26 +1,21 @@
 import { launch } from 'puppeteer';
-import { setInterval } from 'timers';
-import { logger, WinstonPnPLogger } from 'winston-pnp-logger';
 import * as config from '../config/config.json';
 
 (() => {
-    new WinstonPnPLogger({
-        announceSelf: false,
-    });
 
     checkForConfigurationErrors();
 
     for (const website of config.websites) {
         if (website.captureInterval === 0 || website.captureInterval === '0') {
             takeScreenShot(website).then().catch((error) => {
-                logger.error(`Capturing screenshot of ${website.url} (${website.width}x${website.height}) failed.`);
-                logger.error(error);
+                process.emitWarning(`Capturing screenshot of ${website.url} (${website.width}x${website.height}) failed.`);
+                process.emitWarning(error);
             });
         } else {
             setInterval(async () => {
                 await takeScreenShot(website).catch((error) => {
-                    logger.error(`Capturing screenshot of ${website.url} (${website.width}x${website.height}) failed.`);
-                    logger.error(error);
+                    process.emitWarning(`Capturing screenshot of ${website.url} (${website.width}x${website.height}) failed.`);
+                    process.emitWarning(error);
                 });
             }, Number(website.captureInterval) * 1000);
         }
@@ -40,7 +35,7 @@ async function takeScreenShot(website: IWebsite) {
         width: Number(website.width),
     });
     await page.goto(website.url);
-    logger.info(`TAKING SCREENSHOT OF ${website.url} (${website.width}x${website.height}), SAVING TO ${savePath}`);
+    process.stdout.write(`TAKING SCREENSHOT OF ${website.url} (${website.width}x${website.height}), SAVING TO ${savePath}\n`);
     await page.screenshot({path: savePath});
     await browser.close();
 }
@@ -69,7 +64,7 @@ function checkForConfigurationErrors() {
             throw new Error(`${errorMessage} "width" property must be a number greater than 0.`);
         }
 
-        if (!(website.captureInterval && !isNaN(Number(website.captureInterval)) && website.captureInterval >= 0)) {
+        if (!(website.captureInterval !== undefined && !isNaN(Number(website.captureInterval)) && website.captureInterval >= 0)) {
             throw new Error(`${errorMessage} "captureInterval" property must be a number of 0 or greater.`);
         }
 
